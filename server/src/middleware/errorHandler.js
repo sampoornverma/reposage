@@ -4,6 +4,7 @@ const env = require('../config/env');
  * Global Error Handling Middleware for Express
  * In Express, a middleware function with exactly 4 parameters is treated as an error handler.
  */
+// important error handler to trace bugs
 const errorHandler = (err, req, res, next) => {
   // Log the complete error trace to our server console for debugging
   console.error('[SERVER ERROR]:', {
