@@ -45,6 +45,10 @@ async function generateEmbedding(text) {
 }
 
 /**
+ * 
+ * 
+ * 
+ * 
  * Generates embedding vectors for an array of texts in one API call.
  * This is more efficient than calling the API once per chunk.
  * @param {Array<string>} texts - Array of strings to embed
@@ -85,6 +89,9 @@ async function generateEmbeddingsBatch(texts) {
 }
 
 /**
+ * 
+ * 
+ * 
  * Generates embeddings for a large array of chunks by splitting into batches.
  * This is what the indexing pipeline calls.
  *
