@@ -14,10 +14,12 @@
   "type": "commonjs",
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
+    "bullmq": "^5.79.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "helmet": "^8.2.0",
+    "ioredis": "^5.11.1",
     "morgan": "^1.11.0",
     "openai": "^6.45.0",
     "simple-git": "^3.36.0",

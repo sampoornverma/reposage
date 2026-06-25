@@ -33,9 +33,15 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-// [TEMPORARY] Test route — full indexing pipeline
-const { indexRepository } = require('./services/indexingPipeline');
 
+const { addIndexingJob, getJobStatus } = require('./jobs/queue');
+
+/**
+ * 1. POST /api/index
+ * This endpoint no longer runs the heavy indexing pipeline.
+ * Instead, it ADDS the job to the Redis queue and returns immediately.
+ * The user gets a jobId they can use to poll for progress.
+ */
 app.post('/api/index', async (req, res, next) => {
   try {
     const { githubUrl, branch } = req.body;
@@ -44,13 +50,36 @@ app.post('/api/index', async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'githubUrl is required' });
     }
 
-    // Run the full pipeline: clone → walk → chunk → embed → save
-    const result = await indexRepository(githubUrl, branch);
+    // Add to BullMQ queue instead of running synchronously
+    const job = await addIndexingJob({ githubUrl, branch });
+
+    res.status(202).json({
+      success: true,
+      message: 'Indexing job added to the queue.',
+      jobId: job.id
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * 2. GET /api/index/status/:jobId
+ * The frontend calls this every 2-3 seconds to show a progress bar.
+ */
+app.get('/api/index/status/:jobId', async (req, res, next) => {
+  try {
+    const { jobId } = req.params;
+    const status = await getJobStatus(jobId);
+
+    if (!status) {
+      return res.status(404).json({ success: false, error: 'Job not found' });
+    }
 
     res.status(200).json({
       success: true,
-      message: `✅ Successfully indexed "${result.repoName}"!`,
-      data: result
+      data: status
     });
 
   } catch (error) {
