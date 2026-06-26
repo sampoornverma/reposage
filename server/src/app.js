@@ -35,7 +35,6 @@ app.get('/health', (req, res) => {
 });
 
 const { addIndexingJob, getJobStatus } = require('./jobs/queue');
-
 /**
  * 1. POST /api/index
  * This endpoint no longer runs the heavy indexing pipeline.

@@ -6,3 +6,5 @@ build/
 *.log
 .vscode/
 INTERVIEW_GUIDE.md
+jwt_learning.md
+.gitignore
