@@ -5,3 +5,4 @@ dist/
 build/
 *.log
 .vscode/
+INTERVIEW_GUIDE.md
