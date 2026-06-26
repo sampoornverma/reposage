@@ -71,13 +71,16 @@ async function indexRepository(githubUrl, branch = null) {
 
 
 
+    // Filter out any empty chunks (OpenAI API rejects empty strings)
+    const validChunks = allChunks.filter(chunk => chunk.content && chunk.content.trim().length > 0);
+
     // Step 6: Generate embeddings for ALL chunks
-    console.log(`[PIPELINE] 🧠 Embedding ${allChunks.length} chunks...`);
-    await embedChunks(allChunks);
+    console.log(`[PIPELINE] 🧠 Embedding ${validChunks.length} valid chunks (Filtered out ${allChunks.length - validChunks.length} empty chunks)...`);
+    await embedChunks(validChunks);
 
     // Step 7: Save all chunks to Supabase in batches
-    console.log(`[PIPELINE] 💾 Saving ${allChunks.length} chunks to Supabase...`);
-    await saveChunksToSupabase(allChunks, repo.id);
+    console.log(`[PIPELINE] 💾 Saving ${validChunks.length} chunks to Supabase...`);
+    await saveChunksToSupabase(validChunks, repo.id);
 
     // Step 8: Update repository status to "completed"
     await supabase
@@ -85,18 +88,18 @@ async function indexRepository(githubUrl, branch = null) {
       .update({
         status: 'completed',
         total_files: files.length,
-        total_chunks: allChunks.length,
+        total_chunks: validChunks.length,
         updated_at: new Date().toISOString()
       })
       .eq('id', repo.id);
 
-    console.log(`[PIPELINE] ✅ Indexing complete for "${repo.repo_name}"! ${allChunks.length} chunks saved.`);
+    console.log(`[PIPELINE] ✅ Indexing complete for "${repo.repo_name}"! ${validChunks.length} chunks saved.`);
 
     return {
       repositoryId: repo.id,
       repoName: repo.repo_name,
       totalFiles: files.length,
-      totalChunks: allChunks.length,
+      totalChunks: validChunks.length,
       status: 'completed'
     };
 

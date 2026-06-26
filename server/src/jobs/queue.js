@@ -86,6 +86,8 @@ async function addIndexingJob(jobData) {
   return job;
 }
 
+
+
 /**
  * Get the current status of a job by its ID.
  * Used by the frontend to poll: "Is my repo done indexing yet?"

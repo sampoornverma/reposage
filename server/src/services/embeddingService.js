@@ -63,6 +63,15 @@ async function generateEmbeddingsBatch(texts) {
         input: texts
       });
 
+      // OpenRouter sometimes returns 200 OK but with an error object inside
+      if (response.error) {
+        throw new Error(response.error.message || 'OpenRouter returned an error object');
+      }
+
+      if (!response.data) {
+        throw new Error(`Unexpected API Response: ${JSON.stringify(response)}`);
+      }
+
       // The API returns embeddings in the same order as the input texts
       // Each item in response.data has an .embedding property (the vector)
       return response.data.map(item => item.embedding);
@@ -71,12 +80,14 @@ async function generateEmbeddingsBatch(texts) {
       const isLastAttempt = attempt === MAX_RETRIES;
       const isRateLimit = error.status === 429;
       const isServerError = error.status >= 500;
+      // If we manually threw an error due to unexpected API response, treat it as retryable
+      const isUnexpectedResponse = !error.status;
 
-      // Only retry on rate limits (429) or server errors (5xx)
-      if ((isRateLimit || isServerError) && !isLastAttempt) {
+      // Only retry on rate limits (429), server errors (5xx), or unexpected responses
+      if ((isRateLimit || isServerError || isUnexpectedResponse) && !isLastAttempt) {
         // Exponential backoff: wait 2s, then 4s, then 8s
         const waitTime = Math.pow(2, attempt) * 1000;
-        console.warn(`[EMBEDDINGS] ⚠️ Attempt ${attempt} failed (${error.status}). Retrying in ${waitTime / 1000}s...`);
+        console.warn(`[EMBEDDINGS] ⚠️ Attempt ${attempt} failed: ${error.message}. Retrying in ${waitTime / 1000}s...`);
         await sleep(waitTime);
         continue;
       }

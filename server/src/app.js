@@ -87,6 +87,71 @@ app.get('/api/index/status/:jobId', async (req, res, next) => {
   }
 });
 
+const { retrieveRelevantContext, generateAnswerStream, generateStrictAnswer } = require('./services/retrievalService');
+const { validateCitations } = require('./services/citationValidator');
+
+/**
+ * 3. POST /api/chat
+ * The main RAG endpoint.
+ * Handles both Standard Streaming (with post-validation) and Strict Mode (non-streaming, self-healing).
+ */
+app.post('/api/chat', async (req, res, next) => {
+  try {
+    const { question, repositoryId, strictValidation = false } = req.body;
+
+    if (!question || !repositoryId) {
+      return res.status(400).json({ success: false, error: 'question and repositoryId are required' });
+    }
+
+    // 1. Retrieve top 5 most relevant code chunks
+    const chunks = await retrieveRelevantContext(question, repositoryId, 5);
+
+    // --- STRICT MODE (NON-STREAMING) ---
+    if (strictValidation) {
+      const safeAnswer = await generateStrictAnswer(question, chunks);
+      return res.status(200).json({ success: true, data: { text: safeAnswer } });
+    }
+
+    // --- STANDARD MODE (STREAMING) ---
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const stream = await generateAnswerStream(question, chunks);
+    
+    // Accumulate the text in memory secretly to validate at the end
+    let accumulatedResponse = '';
+
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || '';
+      if (content) {
+        accumulatedResponse += content;
+        res.write(`data: ${JSON.stringify({ text: content })}\n\n`);
+      }
+    }
+
+    // Run Citation Validation on the completed text
+    const hallucinations = validateCitations(accumulatedResponse, chunks);
+    if (hallucinations.length > 0) {
+      res.write(`data: ${JSON.stringify({ 
+        type: 'hallucination_warning', 
+        invalidFiles: hallucinations 
+      })}\n\n`);
+    }
+
+    res.write('data: [DONE]\n\n');
+    res.end();
+
+  } catch (error) {
+    if (res.headersSent) {
+      res.write(`data: ${JSON.stringify({ error: 'An error occurred during generation' })}\n\n`);
+      res.end();
+    } else {
+      next(error);
+    }
+  }
+});
+
 // --- ERROR HANDLER (must be last) ---
 app.use(errorHandler);
 

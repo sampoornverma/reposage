@@ -23,6 +23,13 @@ function chunkFile(content, filePath, options = {}) {
     return chunkFileAST(content, filePath, options);
   }
 
+  // Markdown files get heading-based parsing
+  const MARKDOWN_EXTENSIONS = new Set(['.md', '.mdx']);
+  if (MARKDOWN_EXTENSIONS.has(extension)) {
+    const { chunkMarkdown } = require('./markdownChunker');
+    return chunkMarkdown(content, filePath);
+  }
+
   // Fallback to simple line-based sliding window chunker for everything else
   return chunkFileNaive(content, filePath, options);
 }
