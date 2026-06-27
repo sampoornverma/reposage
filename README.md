@@ -1,11 +1,11 @@
-# RepoSage 🧠
+# RepoSage 
 
 [![Tests](https://img.shields.io/badge/tests-13%20passed-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)]()
 
 RepoSage is a production-ready AI Codebase Search Engine. It allows developers to chat with their entire Git repositories in real-time, utilizing an **Advanced Hybrid Search Pipeline** to achieve hyper-accurate code context retrieval.
 
-![RepoSage Benchmark Comparison](client/public/benchmark.png)
+
 
 ## 🚀 Key Features
 
