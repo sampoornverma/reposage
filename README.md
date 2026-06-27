@@ -11,22 +11,24 @@ RepoSage is a production-ready AI Codebase Search Engine. It allows developers t
 
 * **Advanced Hybrid Search (RRF):** Mathematically fuses BM25 Lexical Keyword matching with OpenAI `text-embedding-3-small` Semantic Vectors using Reciprocal Rank Fusion. Consistently outperforms naive semantic search on architectural reasoning by catching exact variable and function names.
 * **Multi-Language AST Parsing:** Uses Tree-sitter (C/Rust bindings) to parse JavaScript, TypeScript, and Python code. Instead of randomly chopping files every 100 lines, it chunks code logically by functions and classes to preserve architectural context.
-* **Self-Healing LLM Streaming Pipeline:** Features a custom regex-based **Citation Validator** intercepting Server-Sent Events (SSE) in real-time. If the LLM hallucinates a file path that does not exist in the retrieved context, the stream is aborted, and a strict fallback mode automatically self-heals the response.
-* **Resilient Vector Database Architecture:** Built on PostgreSQL (pgvector, IVFFlat `lists=100`) with `ON DELETE CASCADE` schemas, intelligent deduplication, and automated TTL CRON jobs to automatically purge orphaned vectors and manage cost.
+* **Dual-Mode LLM Pipeline:** 
+  * **Streaming Mode:** Streams answers in real-time and runs a custom regex-based **Citation Validator** at the end. If the LLM hallucinates a file path that does not exist in the retrieved context, a hallucination warning is appended to the UI.
+  * **Strict Mode (Self-Healing):** A non-streaming fallback mode that forces the LLM to output a strict `json_object` to guarantee accurate citations.
+* **Resilient Vector Database Architecture:** Built on PostgreSQL (pgvector, IVFFlat `lists=100`) with `ON DELETE CASCADE` schemas, intelligent deduplication, and TTL cleanup scripts designed for CRON integration to purge orphaned vectors and manage cost.
 * **Supabase Native Admin Dashboard:** Features a secure Admin Dashboard built entirely on PostgreSQL Row-Level Security (RLS) policies, requiring zero backend API routes to manage waitlisted users.
 
 ## 🛠 Tech Stack
 
 **Frontend:** React, Vite, CSS (Glassmorphism UI)
 **Backend:** Node.js, Express.js
-**Database & Auth:** Supabase (PostgreSQL), pgvector, Supabase Auth (GitHub OAuth)
+**Database & Auth:** Supabase (PostgreSQL), pgvector, Supabase Auth (Email/Password)
 **AI & Vectors:** OpenAI API, Tree-sitter
 **Queue & Cache:** BullMQ, Redis
-**Testing:** Jest (100% unit test coverage on core algorithmic logic)
+**Testing:** Jest (Thorough unit testing on core algorithms)
 
 ## 🧪 Testing Proof
 
-The core algorithms driving RepoSage are heavily unit-tested. 
+The core algorithms driving RepoSage (RRF Math and Citation Validation) are rigorously unit-tested. 
 
 ```bash
 > jest

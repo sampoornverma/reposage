@@ -14,7 +14,7 @@ async function runCleanup() {
   try {
     // Calculate the date 7 days ago
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 1);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const cutoffTimestamp = sevenDaysAgo.toISOString();
 
     // Find and delete old repositories (in a real app, you might also check `is_starred = false`)
