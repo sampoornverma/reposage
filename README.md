@@ -10,6 +10,7 @@ RepoSage is a production-ready AI Codebase Search Engine. It allows developers t
 ## 🚀 Key Features
 
 * **Advanced Hybrid Search (RRF):** Mathematically fuses BM25 Lexical Keyword matching with OpenAI `text-embedding-3-small` Semantic Vectors using Reciprocal Rank Fusion. Consistently outperforms naive semantic search on architectural reasoning by catching exact variable and function names.
+* **Cross-File Architectural Context:** Excels at resolving complex dependencies by retrieving non-contiguous blocks of code from multiple different files simultaneously, allowing the LLM to understand how the frontend UI and backend controllers integrate without missing context.
 * **Multi-Language AST Parsing:** Uses Tree-sitter (C/Rust bindings) to parse JavaScript, TypeScript, and Python code. Instead of randomly chopping files every 100 lines, it chunks code logically by functions and classes to preserve architectural context.
 * **Dual-Mode LLM Pipeline:** 
   * **Streaming Mode:** Streams answers in real-time and runs a custom regex-based **Citation Validator** at the end. If the LLM hallucinates a file path that does not exist in the retrieved context, a hallucination warning is appended to the UI.
