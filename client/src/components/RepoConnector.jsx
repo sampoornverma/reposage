@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Database, Loader2, Code, CheckCircle } from 'lucide-react';
 
-export default function RepoConnector({ onRepoIndexed }) {
+export default function RepoConnector({ onRepoIndexed, session }) {
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState('idle'); // idle, indexing, complete, error
   const [progress, setProgress] = useState(0);
@@ -19,7 +19,8 @@ export default function RepoConnector({ onRepoIndexed }) {
       const res = await fetch('http://localhost:3001/api/index', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({ githubUrl: url })
       });
@@ -41,7 +42,11 @@ export default function RepoConnector({ onRepoIndexed }) {
   const pollStatus = async (jobId) => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/index/status/${jobId}`);
+        const res = await fetch(`http://localhost:3001/api/index/status/${jobId}`, {
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          }
+        });
         const data = await res.json();
         
         if (data.data.state === 'completed') {

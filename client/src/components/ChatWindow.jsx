@@ -2,10 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 
-export default function ChatWindow({ repositoryId, githubUrl }) {
-  const [messages, setMessages] = useState([
-    { role: 'ai', content: `Hello! I have mapped the vector space for ${githubUrl}. What would you like to know about the code?` }
-  ]);
+export default function ChatWindow({ repositoryId, githubUrl, session }) {
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const messagesEndRef = useRef(null);
@@ -38,7 +36,8 @@ export default function ChatWindow({ repositoryId, githubUrl }) {
       const response = await fetch('http://localhost:3001/api/chat', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({ 
           question: questionToAsk, 
@@ -132,6 +131,48 @@ export default function ChatWindow({ repositoryId, githubUrl }) {
     }
   };
 
+  const isChatEmpty = messages.length === 0;
+
+  const renderInputForm = () => (
+    <form onSubmit={handleSubmit} style={{ position: 'relative', width: '100%' }}>
+      <input
+        type="text"
+        className="glass-input"
+        placeholder="Ask a question about the codebase..."
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        disabled={isGenerating}
+        style={{ paddingRight: '60px', padding: '20px 28px', borderRadius: '100px', width: '100%', boxSizing: 'border-box', fontSize: '1.1rem' }}
+      />
+      <button 
+        type="submit" 
+        disabled={isGenerating || !input.trim()}
+        style={{
+          position: 'absolute',
+          right: '8px',
+          top: '8px',
+          bottom: '8px',
+          width: '50px',
+          borderRadius: '50%',
+          background: input.trim() && !isGenerating ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)',
+          border: 'none',
+          color: 'white',
+          cursor: input.trim() && !isGenerating ? 'pointer' : 'not-allowed',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        {isGenerating && (!messages.length || !messages[messages.length - 1]?.isStreaming) ? (
+          <Loader2 size={24} className="animate-pulse" style={{ animation: 'spin 2s linear infinite' }} />
+        ) : (
+          <Send size={24} style={{ marginLeft: '-2px' }} />
+        )}
+      </button>
+    </form>
+  );
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', maxWidth: '1000px', margin: '0 auto', padding: '20px', boxSizing: 'border-box' }}>
       
@@ -141,59 +182,68 @@ export default function ChatWindow({ repositoryId, githubUrl }) {
         <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>{githubUrl}</div>
       </div>
 
-      {/* Chat History */}
-      <div className="glass-panel" style={{ flex: 1, overflowY: 'auto', padding: '24px', marginBottom: '20px', display: 'flex', flexDirection: 'column' }}>
-        {messages.map((msg, idx) => (
-          <MessageBubble 
-            key={idx} 
-            message={msg} 
-            onRebuildSafely={() => handleRebuildSafely(idx)}
-          />
-        ))}
-        {isGenerating && messages[messages.length - 1].isStreaming && (
-          <div className="animate-pulse" style={{ display: 'inline-block', width: '8px', height: '16px', background: 'var(--accent-blue)', marginLeft: '60px' }} />
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+      {isChatEmpty ? (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '3rem', color: 'var(--text-primary)', marginBottom: '16px', fontWeight: 'bold' }}>How can I help?</h1>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '48px', fontSize: '1.2rem', maxWidth: '600px', lineHeight: '1.5' }}>
+            I have mapped the vector space for your repository. Ask me anything about the architecture, security, or implementation details.
+          </p>
 
-      {/* Input Form */}
-      <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
-        <input
-          type="text"
-          className="glass-input"
-          placeholder="Ask a question about the codebase..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={isGenerating}
-          style={{ paddingRight: '60px', padding: '16px 24px', borderRadius: '100px' }}
-        />
-        <button 
-          type="submit" 
-          disabled={isGenerating || !input.trim()}
-          style={{
-            position: 'absolute',
-            right: '8px',
-            top: '8px',
-            bottom: '8px',
-            width: '44px',
-            borderRadius: '50%',
-            background: input.trim() && !isGenerating ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)',
-            border: 'none',
-            color: 'white',
-            cursor: input.trim() && !isGenerating ? 'pointer' : 'not-allowed',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          {isGenerating && !messages[messages.length - 1]?.isStreaming ? (
-            <Loader2 size={20} className="animate-pulse" style={{ animation: 'spin 2s linear infinite' }} />
-          ) : (
-            <Send size={20} style={{ marginLeft: '-2px' }} />
-          )}
-        </button>
-      </form>
+          <div style={{ width: '100%', maxWidth: '750px' }}>
+            {renderInputForm()}
+          </div>
+          
+          <div style={{ display: 'flex', gap: '16px', marginTop: '32px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '800px' }}>
+            {['Explain the architecture', 'Where is the database connected?', 'Find security vulnerabilities', 'How does the auth work?'].map(chip => (
+               <div 
+                 key={chip} 
+                 onClick={() => setInput(chip)} 
+                 style={{ 
+                   padding: '16px 24px', 
+                   background: 'var(--bg-secondary)', 
+                   border: '1px solid var(--border-color)', 
+                   borderRadius: '12px', 
+                   cursor: 'pointer', 
+                   color: 'var(--text-secondary)', 
+                   fontSize: '0.95rem', 
+                   transition: 'all 0.2s ease',
+                   flex: '1 1 200px'
+                 }} 
+                 onMouseOver={(e) => {
+                   e.currentTarget.style.borderColor = 'var(--accent-blue)';
+                   e.currentTarget.style.color = 'var(--text-primary)';
+                 }} 
+                 onMouseOut={(e) => {
+                   e.currentTarget.style.borderColor = 'var(--border-color)';
+                   e.currentTarget.style.color = 'var(--text-secondary)';
+                 }}
+               >
+                 {chip}
+               </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Chat History */}
+          <div className="glass-panel" style={{ flex: 1, overflowY: 'auto', padding: '24px', marginBottom: '20px', display: 'flex', flexDirection: 'column' }}>
+            {messages.map((msg, idx) => (
+              <MessageBubble 
+                key={idx} 
+                message={msg} 
+                onRebuildSafely={() => handleRebuildSafely(idx)}
+              />
+            ))}
+            {isGenerating && messages[messages.length - 1].isStreaming && (
+              <div className="animate-pulse" style={{ display: 'inline-block', width: '8px', height: '16px', background: 'var(--accent-blue)', marginLeft: '60px' }} />
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Form */}
+          {renderInputForm()}
+        </>
+      )}
     </div>
   );
 }

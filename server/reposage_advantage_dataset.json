@@ -1,0 +1,52 @@
+[
+  {
+    "id": "q1",
+    "question": "Starting from the moment a user submits a GitHub URL on the frontend, trace the exact flow of data through the Express routes, the BullMQ queue, and the worker process, naming the key files involved.",
+    "expected_answer": "Frontend calls POST /api/index in app.js -> app.js calls addIndexingJob in jobs/queue.js -> BullMQ adds it to Redis -> jobs/indexingWorker.js picks up the job and calls indexRepository in indexingPipeline.js."
+  },
+  {
+    "id": "q2",
+    "question": "If I want to change the embedding dimensionality from 1536 to 1024, list ALL the files across the entire project (including database SQL) that must be updated.",
+    "expected_answer": "You must update server/src/services/embeddingService.js (if the model changes) AND the database schema in server/supabase/match_chunks.sql (changing vector(1536) to vector(1024))."
+  },
+  {
+    "id": "q3",
+    "question": "How does the 'hallucination_warning' SSE event get triggered, and how does the frontend React state react to it to update the UI?",
+    "expected_answer": "In app.js, after streaming, validateCitations is called. If it returns hallucinations, a JSON string with type 'hallucination_warning' is sent via SSE. In client/src/components/ChatWindow.jsx, the reader parses this type and sets hallucinationWarning on the latest message state."
+  },
+  {
+    "id": "q4",
+    "question": "What happens if the AST parser (tree-sitter) throws an error? Trace the fallback mechanism all the way to how the data is eventually batched for Supabase insertion.",
+    "expected_answer": "astChunker.js catches the error and calls chunkFileNaive. The naive chunks are returned to indexingPipeline.js, which filters out empty chunks, generates embeddings, and calls saveChunksToSupabase in batches of 50."
+  },
+  {
+    "id": "q5",
+    "question": "Explain how the Reciprocal Rank Fusion (RRF) constants are applied in the SQL file, and how the Express backend passes the necessary parameters to that SQL function.",
+    "expected_answer": "In match_chunks.sql, RRF is calculated as (1/(60+vector_rank)) + (1/(60+keyword_rank)). The backend (retrievalService.js) calls this via supabase.rpc('match_chunks', { query_embedding, query_text, match_count, repo_id })."
+  },
+  {
+    "id": "q6",
+    "question": "How exactly does the 'status' column in the Supabase 'repositories' table change over time, and what files are responsible for updating it?",
+    "expected_answer": "indexingPipeline.js inserts the repo with status 'indexing'. Upon completion, it updates it to 'completed'. If an error occurs in the try/catch, it updates it to 'failed'."
+  },
+  {
+    "id": "q7",
+    "question": "Where is the Redis configuration initialized, and how is it shared between the queue producer and the worker consumer?",
+    "expected_answer": "It is initialized in server/src/config/redis.js. Both server/src/jobs/queue.js (producer) and server/src/jobs/indexingWorker.js (consumer) import REDIS_CONFIG and pass it to their BullMQ Queue/Worker instances."
+  },
+  {
+    "id": "q8",
+    "question": "Describe the complete cross-origin (CORS) and security header flow from the backend setup to the frontend fetch requests.",
+    "expected_answer": "app.js uses the 'cors' and 'helmet' middlewares to allow cross-origin requests. The frontend (e.g., RepoConnector.jsx, ChatWindow.jsx) uses fetch() pointing to localhost:3001, which is permitted by that CORS config."
+  },
+  {
+    "id": "q9",
+    "question": "If the OpenRouter API throws a 429 Rate Limit error during embedding, how does the system recover, and where is that logic located?",
+    "expected_answer": "Located in embeddingService.js, there is a retry loop with exponential backoff (2s, 4s, 8s) up to 3 times for 429/5xx errors."
+  },
+  {
+    "id": "q10",
+    "question": "Where are the file paths validated against the LLM's response, and why is this validation completely separate from the LLM generation step?",
+    "expected_answer": "Validated in citationValidator.js. It's separate because the LLM generation is streamed via SSE in app.js, so the validation must run post-generation on the accumulated text to detect hallucinated paths that weren't in the original retrieval context."
+  }
+]

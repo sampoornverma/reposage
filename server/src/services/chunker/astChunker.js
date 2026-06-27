@@ -7,18 +7,23 @@
 
 const Parser = require('tree-sitter');
 const JavaScript = require('tree-sitter-javascript');
+const Python = require('tree-sitter-python');
+const path = require('path');
 const { chunkFileNaive } = require('./naiveChunker');
 
-// Initialize the parser with the JavaScript grammar
+// Initialize the parser
 const parser = new Parser();
-parser.setLanguage(JavaScript);
 
-// Node types we consider as logical code units
+// Node types we consider as logical code units (for both JS and Python)
 const DECLARATION_NODE_TYPES = new Set([
+  // JavaScript / TypeScript
   'function_declaration',
   'class_declaration',
   'method_definition',
-  'arrow_function'
+  'arrow_function',
+  // Python
+  'function_definition',
+  'class_definition'
 ]);
 
 /**
@@ -49,6 +54,14 @@ function findDeclarations(node, declarations = []) {
  */
 function chunkFileAST(content, filePath, options = {}) {
   const maxLinesPerChunk = options.maxLinesPerChunk || 60;
+  
+  // Dynamically set grammar based on file extension
+  const ext = path.extname(filePath).toLowerCase();
+  if (ext === '.py') {
+    parser.setLanguage(Python);
+  } else {
+    parser.setLanguage(JavaScript);
+  }
   
   const lines = content.split(/\r?\n/);
   const totalLines = lines.length;

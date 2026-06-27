@@ -67,6 +67,42 @@ export default function LandingPage({ onStart }) {
         </div>
       </section>
 
+      <section className="demo-section" style={{ background: 'var(--bg-secondary)', padding: '80px 20px', textAlign: 'center' }}>
+        <div className="demo-header" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <h2>Ablation Tested. Production Ready.</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '16px', lineHeight: '1.6' }}>
+            In rigorous internal ablation testing, our <strong>Advanced Hybrid Search</strong> outperformed pure semantic search on 4 out of 5 complex architectural queries. 
+            How do we achieve this precision? We don't just read your code like a text file.
+          </p>
+        </div>
+        
+        <div style={{ maxWidth: '900px', margin: '40px auto', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+          <img src="/benchmark.png" alt="Benchmark Comparison" style={{ width: '100%', height: 'auto', display: 'block' }} />
+        </div>
+
+        <div style={{ display: 'flex', gap: '32px', maxWidth: '1000px', margin: '60px auto 0', textAlign: 'left', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Code2 size={24} /> Multi-Language AST Parsing
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              We use Tree-sitter to parse JavaScript, TypeScript, and Python into Abstract Syntax Trees. 
+              Instead of blindly chopping code every 100 lines, we chunk it logically by functions and classes, ensuring the LLM sees the complete architectural picture.
+            </p>
+          </div>
+          
+          <div style={{ flex: '1 1 300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Bot size={24} /> Advanced Hybrid Search
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              Pure semantic search is a thing of the past. RepoSage utilizes a powerful <strong>Advanced Hybrid Search</strong> mechanism. 
+              By seamlessly merging BM25 keyword matching with OpenAI text-embedding-3-small vectors using Reciprocal Rank Fusion, we retrieve hyper-relevant code snippets with unmatched precision.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="pricing-section">
         <div className="pricing-header">
           <h2>Simple Pricing, Powerful Features</h2>

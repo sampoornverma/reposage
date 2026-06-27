@@ -35,18 +35,47 @@ app.get('/health', (req, res) => {
 });
 
 const { addIndexingJob, getJobStatus } = require('./jobs/queue');
+const { supabase } = require('./config/supabase');
+const { requireAuth } = require('./middleware/authMiddleware');
+
 /**
  * 1. POST /api/index
  * This endpoint no longer runs the heavy indexing pipeline.
  * Instead, it ADDS the job to the Redis queue and returns immediately.
  * The user gets a jobId they can use to poll for progress.
  */
-app.post('/api/index', async (req, res, next) => {
+app.post('/api/index', requireAuth, async (req, res, next) => {
   try {
-    const { githubUrl, branch } = req.body;
+    const { githubUrl, branch, forceReindex } = req.body;
 
     if (!githubUrl) {
       return res.status(400).json({ success: false, error: 'githubUrl is required' });
+    }
+
+    // --- STEP 1: DEDUPLICATION CHECK ---
+    const { data: existingRepos, error } = await supabase
+      .from('repositories')
+      .select('id, status')
+      .eq('github_url', githubUrl)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    const existingRepo = existingRepos && existingRepos.length > 0 ? existingRepos[0] : null;
+
+    if (existingRepo && !forceReindex) {
+      if (existingRepo.status === 'completed') {
+        return res.status(200).json({
+          success: true,
+          message: 'Repository is already indexed.',
+          repositoryId: existingRepo.id,
+          alreadyIndexed: true
+        });
+      }
+    }
+
+    if (existingRepo && forceReindex) {
+      // Clear out old chunks to prevent vector database bloat
+      await supabase.from('chunks').delete().eq('repository_id', existingRepo.id);
     }
 
     // Add to BullMQ queue instead of running synchronously
@@ -67,7 +96,7 @@ app.post('/api/index', async (req, res, next) => {
  * 2. GET /api/index/status/:jobId
  * The frontend calls this every 2-3 seconds to show a progress bar.
  */
-app.get('/api/index/status/:jobId', async (req, res, next) => {
+app.get('/api/index/status/:jobId', requireAuth, async (req, res, next) => {
   try {
     const { jobId } = req.params;
     const status = await getJobStatus(jobId);
@@ -94,16 +123,16 @@ const { validateCitations } = require('./services/citationValidator');
  * The main RAG endpoint.
  * Handles both Standard Streaming (with post-validation) and Strict Mode (non-streaming, self-healing).
  */
-app.post('/api/chat', async (req, res, next) => {
+app.post('/api/chat', requireAuth, async (req, res, next) => {
   try {
-    const { question, repositoryId, strictValidation = false } = req.body;
+    const { question, repositoryId, strictValidation = false, ablationMode = 'hybrid' } = req.body;
 
     if (!question || !repositoryId) {
       return res.status(400).json({ success: false, error: 'question and repositoryId are required' });
     }
 
     // 1. Retrieve top 5 most relevant code chunks
-    const chunks = await retrieveRelevantContext(question, repositoryId, 5);
+    const chunks = await retrieveRelevantContext(question, repositoryId, 5, ablationMode);
 
     // --- STRICT MODE (NON-STREAMING) ---
     if (strictValidation) {

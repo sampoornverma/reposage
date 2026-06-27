@@ -26,19 +26,22 @@ const openai = new OpenAI({
  * @returns {Array} - Array of top matching code chunks
  */
 
-async function retrieveRelevantContext(question, repositoryId, matchCount = 5) {
+async function retrieveRelevantContext(question, repositoryId, matchCount = 5, ablationMode = 'hybrid') {
   console.log(`[RETRIEVAL] 🔍 Embedding user question: "${question}"`);
   
   // 1. Convert the question into a vector
   const queryEmbedding = await generateEmbedding(question);
 
-  console.log(`[RETRIEVAL] 🔎 Searching Supabase for top ${matchCount} matches...`);
+  console.log(`[RETRIEVAL] 🔎 Searching Supabase for top ${matchCount} matches (Mode: ${ablationMode})...`);
   
   // 2. Call our custom Postgres function (match_chunks)
-  // This now runs our Reciprocal Rank Fusion (RRF) Hybrid Search
+  // If ablationMode is 'semantic', we pass an empty string for query_text.
+  // This causes the keyword_search CTE to return nothing, forcing pure vector ranking.
+  const queryText = ablationMode === 'semantic' ? '' : question;
+  
   const { data: chunks, error } = await supabase.rpc('match_chunks', {
     query_embedding: queryEmbedding,
-    query_text: question,
+    query_text: queryText,
     match_count: matchCount,
     repo_id: repositoryId
   });
