@@ -13,11 +13,11 @@ testRedisConnection()
     createIndexingWorker(2);
 
     // 3. Start the Express API Server
-    const server = app.listen(PORT, '127.0.0.1', () => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`=========================================`);
       console.log(`🚀 RepoSage Server running in ${env.NODE_ENV} mode`);
-      console.log(`📡 Listening on http://localhost:${PORT}`);
-      console.log(`🏥 Health check: http://localhost:${PORT}/health`);
+      console.log(`📡 Listening on port ${PORT} (0.0.0.0)`);
+      console.log(`🏥 Health check: http://0.0.0.0:${PORT}/health`);
       console.log(`=========================================`);
     });
 
