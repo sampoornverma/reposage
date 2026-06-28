@@ -103,6 +103,10 @@ export default function LandingPage({ onStart }) {
           </p>
         </div>
         
+        <div style={{ maxWidth: '900px', margin: '40px auto', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+          <img src="/benchmark.png" alt="Benchmark Comparison" style={{ width: '100%', height: 'auto', display: 'block' }} />
+        </div>
+
         <div style={{ display: 'flex', gap: '32px', maxWidth: '1200px', margin: '60px auto 0', textAlign: 'left', flexWrap: 'wrap' }}>
           {/* Card 1 */}
           <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
