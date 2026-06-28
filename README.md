@@ -17,6 +17,7 @@ RepoSage is a production-ready AI Codebase Search Engine. It allows developers t
   * **Strict Mode (Self-Healing):** A non-streaming fallback mode that forces the LLM to output a strict `json_object` to guarantee accurate citations.
 * **Resilient Vector Database Architecture:** Built on PostgreSQL (pgvector, IVFFlat `lists=100`) with `ON DELETE CASCADE` schemas, intelligent deduplication, and TTL cleanup scripts designed for CRON integration to purge orphaned vectors and manage cost.
 * **Supabase Native Admin Dashboard:** Features a secure Admin Dashboard built entirely on PostgreSQL Row-Level Security (RLS) policies, requiring zero backend API routes to manage waitlisted users.
+* **Enterprise-Grade API Security:** Protects heavy LLM endpoints from DDoS and billing abuse using a strict IP-based Rate Limiter (`express-rate-limit`) combined with JWT-verified Role-Based Access Control.
 
 ## 🛠 Tech Stack
 

@@ -24,6 +24,17 @@ app.use(express.json());
 // 4. Log every HTTP request to the terminal
 app.use(morgan('dev'));
 
+// 5. Rate Limiting (Protects API from DDoS and OpenAI bill abuse)
+const rateLimit = require('express-rate-limit');
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 50, // Limit each IP to 50 requests per `window` (here, per minute)
+  message: { success: false, error: 'Too many requests from this IP, please try again after a minute.' },
+  standardHeaders: true, 
+  legacyHeaders: false, 
+});
+app.use('/api/', apiLimiter);
+
 // --- ROUTES ---
 
 // Health check endpoint
