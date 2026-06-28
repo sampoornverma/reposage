@@ -1,6 +1,6 @@
 import React from 'react';
 import './LandingPage.css';
-import { Bot, Code2, Send, Check, User } from 'lucide-react';
+import { Bot, Code2, Send, Check, User, ShieldCheck, Database } from 'lucide-react';
 
 export default function LandingPage({ onStart }) {
   return (
@@ -103,12 +103,9 @@ export default function LandingPage({ onStart }) {
           </p>
         </div>
         
-        <div style={{ maxWidth: '900px', margin: '40px auto', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
-          <img src="/benchmark.png" alt="Benchmark Comparison" style={{ width: '100%', height: 'auto', display: 'block' }} />
-        </div>
-
-        <div style={{ display: 'flex', gap: '32px', maxWidth: '1000px', margin: '60px auto 0', textAlign: 'left', flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', gap: '32px', maxWidth: '1200px', margin: '60px auto 0', textAlign: 'left', flexWrap: 'wrap' }}>
+          {/* Card 1 */}
+          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
             <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Code2 size={24} /> Multi-Language AST Parsing
             </h3>
@@ -118,13 +115,34 @@ export default function LandingPage({ onStart }) {
             </p>
           </div>
           
-          <div style={{ flex: '1 1 300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+          {/* Card 2 */}
+          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
             <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Bot size={24} /> Advanced Hybrid Search
             </h3>
             <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               Pure semantic search is a thing of the past. RepoSage utilizes a powerful <strong>Advanced Hybrid Search</strong> mechanism. 
               By seamlessly merging BM25 keyword matching with OpenAI text-embedding-3-small vectors using Reciprocal Rank Fusion, we retrieve hyper-relevant code snippets with unmatched precision.
+            </p>
+          </div>
+
+          {/* Card 3 */}
+          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldCheck size={24} /> Self-Healing Pipeline
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              Our dual-mode LLM pipeline intercepts Server-Sent Events in real-time. If the AI hallucinates a non-existent file path, the Regex-powered <strong>Citation Validator</strong> catches it instantly, triggering a Strict JSON fallback mode to auto-correct the error.
+            </p>
+          </div>
+
+          {/* Card 4 */}
+          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Database size={24} /> Resilient Vector DB
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              Built on PostgreSQL with <strong>pgvector</strong> and an <code>IVFFlat lists=100</code> index for lightning-fast cosine similarity. Integrated with native <code>ON DELETE CASCADE</code> schemas and BullMQ Redis workers to ensure zero orphaned vectors.
             </p>
           </div>
         </div>
