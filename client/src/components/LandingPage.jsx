@@ -103,49 +103,45 @@ export default function LandingPage({ onStart }) {
           </p>
         </div>
         
-        <div style={{ maxWidth: '900px', margin: '40px auto', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
-          <img src="/benchmark.png" alt="Benchmark Comparison" style={{ width: '100%', height: 'auto', display: 'block' }} />
-        </div>
-
-        <div style={{ display: 'flex', gap: '32px', maxWidth: '1200px', margin: '60px auto 0', textAlign: 'left', flexWrap: 'wrap' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', maxWidth: '1000px', margin: '60px auto 0', textAlign: 'left' }}>
           {/* Card 1 */}
-          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Code2 size={24} /> Multi-Language AST Parsing
+          <div style={{ background: 'var(--bg-primary)', padding: '40px', borderRadius: '16px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.25rem' }}>
+              <Code2 size={28} /> Multi-Language AST Parsing
             </h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', fontSize: '1.05rem', margin: 0 }}>
               We use Tree-sitter to parse JavaScript, TypeScript, and Python into Abstract Syntax Trees. 
               Instead of blindly chopping code every 100 lines, we chunk it logically by functions and classes, ensuring the LLM sees the complete architectural picture.
             </p>
           </div>
           
           {/* Card 2 */}
-          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Bot size={24} /> Advanced Hybrid Search
+          <div style={{ background: 'var(--bg-primary)', padding: '40px', borderRadius: '16px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.25rem' }}>
+              <Bot size={28} /> Advanced Hybrid Search
             </h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', fontSize: '1.05rem', margin: 0 }}>
               Pure semantic search is a thing of the past. RepoSage utilizes a powerful <strong>Advanced Hybrid Search</strong> mechanism. 
-              By seamlessly merging BM25 keyword matching with OpenAI text-embedding-3-small vectors using Reciprocal Rank Fusion, we retrieve hyper-relevant code snippets with unmatched precision.
+              By seamlessly merging BM25 keyword matching with OpenAI text-embedding-3-small vectors using Reciprocal Rank Fusion, we retrieve hyper-relevant code snippets.
             </p>
           </div>
 
           {/* Card 3 */}
-          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ShieldCheck size={24} /> Self-Healing Pipeline
+          <div style={{ background: 'var(--bg-primary)', padding: '40px', borderRadius: '16px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.25rem' }}>
+              <ShieldCheck size={28} /> Self-Healing Pipeline
             </h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-              Our dual-mode LLM pipeline intercepts Server-Sent Events in real-time. If the AI hallucinates a non-existent file path, the Regex-powered <strong>Citation Validator</strong> catches it instantly, triggering a Strict JSON fallback mode to auto-correct the error.
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', fontSize: '1.05rem', margin: 0 }}>
+              Our dual-mode LLM pipeline intercepts Server-Sent Events in real-time. If the AI hallucinates a non-existent file path, the Regex-powered <strong>Citation Validator</strong> catches it instantly, triggering a Strict JSON fallback mode.
             </p>
           </div>
 
           {/* Card 4 */}
-          <div style={{ flex: '1 1 calc(50% - 32px)', minWidth: '300px', background: 'var(--bg-primary)', padding: '32px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Database size={24} /> Resilient Vector DB
+          <div style={{ background: 'var(--bg-primary)', padding: '40px', borderRadius: '16px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ color: 'var(--accent-blue)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.25rem' }}>
+              <Database size={28} /> Resilient Vector DB
             </h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', fontSize: '1.05rem', margin: 0 }}>
               Built on PostgreSQL with <strong>pgvector</strong> and an <code>IVFFlat lists=100</code> index for lightning-fast cosine similarity. Integrated with native <code>ON DELETE CASCADE</code> schemas and BullMQ Redis workers to ensure zero orphaned vectors.
             </p>
           </div>
