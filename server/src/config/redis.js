@@ -27,6 +27,22 @@ const REDIS_CONFIG = {
   enableReadyCheck: false,                   // Faster startup, BullMQ handles readiness itself
 };
 
+// If a REDIS_URL is provided (e.g., from Render or Upstash), parse it and override the host/port
+if (process.env.REDIS_URL) {
+  try {
+    const url = new URL(process.env.REDIS_URL);
+    REDIS_CONFIG.host = url.hostname;
+    REDIS_CONFIG.port = url.port ? parseInt(url.port) : 6379;
+    if (url.password) REDIS_CONFIG.password = decodeURIComponent(url.password);
+    if (url.username) REDIS_CONFIG.username = decodeURIComponent(url.username);
+    if (url.protocol === 'rediss:') {
+      REDIS_CONFIG.tls = { rejectUnauthorized: false }; // Required for secure managed Redis
+    }
+  } catch (error) {
+    console.warn('[REDIS] Failed to parse REDIS_URL, falling back to localhost');
+  }
+}
+
 /**
  * Creates a new Redis connection.
  * BullMQ requires separate connections for Queue and Worker,
