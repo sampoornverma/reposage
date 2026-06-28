@@ -16,7 +16,8 @@ export default function RepoConnector({ onRepoIndexed, session }) {
     setErrorMsg('');
 
     try {
-      const res = await fetch('http://localhost:3001/api/index', {
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${API_BASE}/api/index`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -42,7 +43,8 @@ export default function RepoConnector({ onRepoIndexed, session }) {
   const pollStatus = async (jobId) => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/index/status/${jobId}`, {
+        const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${API_BASE}/api/index/status/${jobId}`, {
           headers: {
             'Authorization': `Bearer ${session?.access_token}`
           }
