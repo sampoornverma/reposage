@@ -1,6 +1,6 @@
 import React from 'react';
 import './LandingPage.css';
-import { Bot, Code2, Send, Check } from 'lucide-react';
+import { Bot, Code2, Send, Check, User } from 'lucide-react';
 
 export default function LandingPage({ onStart }) {
   return (
@@ -50,20 +50,47 @@ export default function LandingPage({ onStart }) {
           <p>Instant answers. Infinite context. Zero hallucinations.</p>
         </div>
         
-        <div className="demo-showcase">
-          <div className="demo-chat">
-            <div style={{ background: '#1f2937', color: '#fff', padding: '16px 24px', borderRadius: '12px', alignSelf: 'flex-start', maxWidth: '80%' }}>
-              <strong>RepoSage:</strong> Hello! I have mapped the vector space for your repository. What would you like to know?
+        <div className="demo-showcase" style={{ background: 'var(--bg-primary)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)', maxWidth: '800px', margin: '0 auto', textAlign: 'left' }}>
+          
+          {/* AI Message */}
+          <div style={{ display: 'flex', gap: '16px', padding: '20px', borderRadius: '16px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', marginBottom: '16px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Bot size={20} color="var(--accent-blue)" />
             </div>
-            <div style={{ background: '#2563eb', color: '#fff', padding: '16px 24px', borderRadius: '12px', alignSelf: 'flex-end', maxWidth: '80%' }}>
-              <strong>You:</strong> How is the SSE streaming logic maintained?
-            </div>
-            <div style={{ background: '#1f2937', color: '#fff', padding: '16px 24px', borderRadius: '12px', alignSelf: 'flex-start', maxWidth: '80%' }}>
-              <strong>RepoSage:</strong> The SSE streaming is handled in <code>server/src/app.js</code> (Lines 115-140) where it intercepts the LLM chunks. The validation is done in <code>citationValidator.js</code> before sending the final event. 
-              <br/><br/>
-              <span style={{ fontSize: '12px', color: '#9ca3af' }}>✅ Citation Validated</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--accent-blue)' }}>RepoSage</div>
+              <div style={{ lineHeight: '1.6', color: 'var(--text-primary)' }}>Hello! I have mapped the vector space for your repository. What would you like to know?</div>
             </div>
           </div>
+
+          {/* User Message */}
+          <div style={{ display: 'flex', gap: '16px', padding: '20px', borderRadius: '16px', background: 'transparent', border: 'none', marginBottom: '16px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(139, 92, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <User size={20} color="#8b5cf6" />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 600, marginBottom: '8px', color: '#8b5cf6' }}>You</div>
+              <div style={{ lineHeight: '1.6', color: 'var(--text-primary)' }}>How is the SSE streaming logic maintained?</div>
+            </div>
+          </div>
+
+          {/* AI Message with validation */}
+          <div style={{ display: 'flex', gap: '16px', padding: '20px', borderRadius: '16px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Bot size={20} color="var(--accent-blue)" />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--accent-blue)' }}>RepoSage</div>
+              <div style={{ lineHeight: '1.6', color: 'var(--text-primary)' }}>
+                The SSE streaming is handled in <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px' }}>server/src/app.js</code> (Lines 115-140) where it intercepts the LLM chunks. The validation is done in <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px' }}>citationValidator.js</code> before sending the final event.
+                <br/><br/>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '4px 10px', borderRadius: '100px' }}>
+                  <Check size={14} /> Citation Validated
+                </span>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </section>
 
