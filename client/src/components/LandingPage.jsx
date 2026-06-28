@@ -103,7 +103,7 @@ export default function LandingPage({ onStart }) {
           </p>
         </div>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', maxWidth: '1000px', margin: '60px auto 0', textAlign: 'left' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', maxWidth: '1000px', margin: '60px auto 0', textAlign: 'left', padding: '40px', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '24px', background: 'rgba(0, 0, 0, 0.2)', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
           {/* Card 1 */}
           <div style={{ background: 'var(--bg-primary)', padding: '40px', borderRadius: '16px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
             <h3 style={{ color: 'var(--accent-blue)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.25rem' }}>
