@@ -1,11 +1,5 @@
 /**
  * Citation Validator Service
- * 
- * 🎤 INTERVIEW POINT: "How do you handle AI hallucinations in your RAG pipeline?"
- * Answer: "I built a Citation Validator that parses the LLM's final response for any file paths 
- * (e.g. `src/utils.js`). It cross-references those paths against the actual metadata of the chunks 
- * we retrieved from Postgres. If the LLM cited a file that we didn't provide in the context, 
- * we flag it as a hallucination."
  */
 
 /**

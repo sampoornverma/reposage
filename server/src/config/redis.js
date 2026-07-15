@@ -1,16 +1,5 @@
 /**
  * Redis Connection Config
- * 
- * WHY REDIS? (🎤 Interview Answer)
- * Redis is an in-memory data store. Unlike PostgreSQL (disk-based),
- * Redis reads/writes from RAM at microsecond speed.
- * BullMQ needs this speed because workers constantly ask:
- * "Any new jobs?" — doing this on Postgres would kill performance.
- * 
- * WHY ioredis? (🎤 Interview Answer)
- * ioredis is the most popular Redis client for Node.js.
- * BullMQ internally uses ioredis. We use it too for consistency
- * and because it supports cluster mode, sentinel, and pipelines.
  */
 
 const IORedis = require('ioredis');
@@ -47,11 +36,6 @@ if (process.env.REDIS_URL) {
  * Creates a new Redis connection.
  * BullMQ requires separate connections for Queue and Worker,
  * so we use a factory function instead of sharing one connection.
- * 
- * 🎤 Interview Point: "Why a factory function?"
- * → Redis connections are stateful. If the Queue is mid-publish
- *   and the Worker tries to subscribe on the same connection,
- *   they interfere. Separate connections isolate them.
  */
 function createRedisConnection() {
   return new IORedis(REDIS_CONFIG);

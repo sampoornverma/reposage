@@ -1,12 +1,6 @@
 -- Supabase pgvector + Full-Text Search Hybrid Retrieval (Reciprocal Rank Fusion)
 -- You MUST run this SQL in your Supabase Dashboard -> SQL Editor to replace the old function
 
--- 🎤 INTERVIEW POINT: "How does your Hybrid Retrieval work?"
--- Answer: "I built a Reciprocal Rank Fusion (RRF) algorithm inside Postgres. 
--- It simultaneously runs a Vector Cosine Distance search and a Full-Text Keyword Search (tsvector).
--- It calculates the rank of the code chunks in both searches, merges them using the RRF formula:
--- (1 / (60 + vector_rank)) + (1 / (60 + keyword_rank)), and returns the absolute best match."
-
 CREATE OR REPLACE FUNCTION match_chunks (
   query_embedding vector(1536), -- Vector from OpenAI
   query_text text,              -- Raw string question from the user

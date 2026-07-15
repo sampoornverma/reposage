@@ -3,7 +3,7 @@
  * 
  * While the actual RRF merging happens via the PostgreSQL `match_chunks` RPC,
  * this utility exists for testing, benchmarking, and demonstrating the RRF 
- * logic for senior engineering interviews.
+ * logic.
  * 
  * Formula: Score = 1 / (k + rank)
  * k is a smoothing constant, typically 60.

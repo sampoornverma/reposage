@@ -1,11 +1,5 @@
 /**
- * Retrieval & RAG Service (Day 7)
- * 
- * 🎤 INTERVIEW POINT: "How does your RAG retrieval engine work?"
- * Answer: "It's a 3-step pipeline:
- * 1. Embed the user's question into a 1536-dimensional vector using OpenAI.
- * 2. Query Postgres (pgvector) using Cosine Similarity to find the top 5 most relevant code chunks for that specific repository.
- * 3. Assemble those chunks into a prompt and stream the LLM response back to the client using Server-Sent Events (SSE)."
+ * Retrieval & RAG Service
  */
 
 const OpenAI = require('openai');
