@@ -7,7 +7,7 @@ RepoSage is a production-ready AI Codebase Search Engine. It allows developers t
 
 
 
-## 🚀 Key Features
+## Key Features
 
 * **Advanced Hybrid Search (RRF):** Mathematically fuses BM25 Lexical Keyword matching with OpenAI `text-embedding-3-small` Semantic Vectors using Reciprocal Rank Fusion. Consistently outperforms naive semantic search on architectural reasoning by catching exact variable and function names.
 * **Cross-File Architectural Context:** Excels at resolving complex dependencies by retrieving non-contiguous blocks of code from multiple different files simultaneously, allowing the LLM to understand how the frontend UI and backend controllers integrate without missing context.
@@ -19,7 +19,7 @@ RepoSage is a production-ready AI Codebase Search Engine. It allows developers t
 * **Supabase Native Admin Dashboard:** Features a secure Admin Dashboard built entirely on PostgreSQL Row-Level Security (RLS) policies, requiring zero backend API routes to manage waitlisted users.
 * **Enterprise-Grade API Security:** Protects heavy LLM endpoints from DDoS and billing abuse using a strict IP-based Rate Limiter (`express-rate-limit`) combined with JWT-verified Role-Based Access Control.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 **Frontend:** React, Vite, CSS (Glassmorphism UI)
 **Backend:** Node.js, Express.js
@@ -28,7 +28,7 @@ RepoSage is a production-ready AI Codebase Search Engine. It allows developers t
 **Queue & Cache:** BullMQ, Redis
 **Testing:** Jest (Thorough unit testing on core algorithms)
 
-## 🧪 Testing Proof
+##  Testing Proof
 
 The core algorithms driving RepoSage (RRF Math and Citation Validation) are rigorously unit-tested. 
 
@@ -46,7 +46,7 @@ Time:        1.88 s
 
 We rigorously test edge cases where Semantic Search highly ranks a chunk but Lexical Search completely misses it, ensuring the mathematical RRF algorithm scores and sorts the chunks correctly without failure. 
 
-## ⚙️ Running Locally
+##  Running Locally
 
 ### Prerequisites
 - Node.js (v20+)
